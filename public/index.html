@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Real DevOps Lab</title>
+  <style>
+    body{font-family:system-ui,sans-serif;max-width:760px;margin:80px auto;padding:0 24px;background:#08111f;color:#eaf2ff}
+    .card{background:#0f1d31;border:1px solid #1d3859;border-radius:16px;padding:32px}
+    .ok{color:#35e0a1;font-weight:700}
+    code{background:#132741;padding:3px 7px;border-radius:6px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Real DevOps Lab</h1>
+    <p>Your starter application is running.</p>
+    <p>API health: <span id="status">checking...</span></p>
+    <p>Health endpoint: <code>/api/health</code></p>
+  </div>
+  <script>
+    fetch("/api/health").then(r=>r.json()).then(data=>{
+      const el=document.getElementById("status");
+      el.textContent=data.status; el.className="ok";
+    }).catch(()=>{document.getElementById("status").textContent="unavailable";});
+  </script>
+</body>
+</html>
