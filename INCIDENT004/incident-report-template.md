@@ -1,0 +1,19 @@
+# INCIDENT-004 Report
+
+## Symptom
+...
+
+## Investigation
+...
+
+## Root cause
+...
+
+## Fix
+...
+
+## Verification
+...
+
+## Lesson learned
+...

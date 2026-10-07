@@ -1,44 +1,28 @@
 # Real DevOps Lab
 
-Learn DevOps by doing real work.
+Hands-on DevOps practice with real projects and troubleshooting incidents.
 
-Instead of only watching tutorials, you will build, run, deploy, troubleshoot, and fix a real application.
+## What You Will Practice
 
-## What You Will Do
-
-In this project you will:
-
-- Run a real application
-- Work with Docker
-- Build Docker images
-- Understand ports and containers
-- Troubleshoot application problems
-- Work with CI/CD
-- Deploy an application to a Linux server
-
-## Technologies
-
-You will work with:
-
-- Linux
 - Docker
-- Git
-- GitHub
-- GitHub Actions
-- CI/CD
+- Linux
 - Networking
-- Application deployment
+- CI/CD
+- Deployment
 - Troubleshooting
+- Logs and configuration
 
-## Project
+## Labs
 
-- DEVOPS-101 — Containerize the Application
 - INCIDENT-001 — App Down, Container Running
-- DEVOPS-102 — Build in CI
-- DEVOPS-103 — Deploy to Linux
+- INCIDENT-002 — Wrong Environment Variable
+- INCIDENT-003 — Container Running, Port Closed
+- INCIDENT-004 — Container Keeps Restarting
+
+More incidents coming soon.
 
 ## Join Real DevOps Lab
 
-Want to complete the full hands-on project and troubleshoot real DevOps incidents?
-
 👉 [Join Real DevOps Lab on Skool](https://www.skool.com/real-devops-lab-9645)
+
+**BUILD → DEPLOY → BREAK → TROUBLESHOOT → FIX**
