@@ -1,41 +1,41 @@
 # INCIDENT-001 — Hints
 
-Use these **one at a time**. Try the incident before opening the next hint.
+Use one hint at a time.
 
 ## Hint 1
 
-A running container only tells you that its main process is alive. It does **not** prove the application is reachable from your host.
+A running container only means its main process is alive. It does not prove that traffic from your host reaches the application.
 
-Check:
+Look at:
 
 ```bash
 docker ps
 ```
 
-Pay attention to the **PORTS** column.
+Pay attention to the `PORTS` column.
 
 ---
 
 ## Hint 2
 
-Find the port the Node.js application says it is listening on:
+Now ask the application itself which port it started on:
 
 ```bash
-docker logs rdl-incident-001
+docker logs incident-001
 ```
 
-Now compare that with the container-side port used by Docker publishing.
+Do not change anything yet. Compare the output with `docker ps`.
 
 ---
 
 ## Hint 3
 
-Remember the syntax:
+Remember Docker port publishing syntax:
 
 ```text
 -p HOST_PORT:CONTAINER_PORT
 ```
 
-The host port and the port the application listens on inside the container do not have to be the same — but the **container-side port must point to the application**.
+The right-hand side must point to the port where the application is actually listening inside the container.
 
 Still stuck? Open `SOLUTION.md`.

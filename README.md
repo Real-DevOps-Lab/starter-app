@@ -1,90 +1,170 @@
-# INCIDENT-001 — Container Running, App Down
+# Real DevOps Lab — INCIDENT-001
+
+## Container Running, App Down
 
 **Difficulty:** Beginner  
 **Time:** 15–20 minutes  
 **Practice:** Docker · ports · logs · troubleshooting
 
-Your Docker container is running ✅  
+The container is running ✅  
 The application is unavailable ❌
 
-Your job is to investigate the problem, find the root cause, fix it, and prove the service works again.
+Your task is to **investigate the problem yourself, find the root cause, fix it, and verify the application works**.
 
-> No long tutorial. Start the broken system and troubleshoot it like a real incident.
+No helper scripts. You will run the Docker commands yourself and inspect what the system is telling you.
 
-## Quick start
+---
 
-You need **Docker** and **curl** installed.
+## 1. Clone the repository
 
 ```bash
 git clone https://github.com/Real-DevOps-Lab/starter-app.git
 cd starter-app/INCIDENT001
-chmod +x start-broken.sh reset.sh verify.sh
-./start-broken.sh
 ```
 
-Now check the situation:
+Or download the repository as ZIP, extract it, and open a terminal inside the `INCIDENT001` folder.
+
+---
+
+## 2. Build the image
+
+```bash
+docker build -t real-devops-lab-app .
+```
+
+Make sure the build completes successfully.
+
+---
+
+## 3. Start the broken application
+
+Run this command exactly as shown:
+
+```bash
+docker run -d --rm \
+  --name incident-001 \
+  -e PORT=3001 \
+  -p 3000:3000 \
+  real-devops-lab-app
+```
+
+Now confirm that Docker says the container is running:
 
 ```bash
 docker ps
-curl http://localhost:3000
 ```
 
-You should see the container running, but the application should not respond on `localhost:3000`.
+You should see `incident-001` with status `Up`.
 
-## Your mission
+---
 
-1. Confirm the container is running.
-2. Inspect the container configuration.
-3. Check the application logs.
-4. Find the root cause.
-5. Fix the problem.
-6. Verify that the application is healthy.
-
-Useful commands may include:
+## 4. Try the application
 
 ```bash
-docker ps
-docker logs rdl-incident-001
-docker inspect rdl-incident-001
+curl http://localhost:3000/api/health
 ```
 
-Try not to open the hints or solution until you have investigated the problem yourself.
+The request should fail.
 
-## Verify your fix
-
-When you think it is fixed:
-
-```bash
-./verify.sh
-```
-
-Success should end with:
+That is the incident:
 
 ```text
-✅ Incident resolved. Application is healthy.
+Container: RUNNING ✅
+Application: DOWN ❌
 ```
 
-## Stuck?
+Do not rebuild the application. Assume the application code itself is fine.
 
-Open [`HINTS.md`](INCIDENT001/HINTS.md) one hint at a time.
+---
 
-## Want to compare your diagnosis?
+## 5. Investigate manually
 
-After you solve it, check [`SOLUTION.md`](INCIDENT001/SOLUTION.md) for the root cause, two valid fixes, and the reasoning behind them.
+Start with the same commands you would use during a real incident.
 
-## Reset the lab
+### Check the container
 
 ```bash
-./reset.sh
-./start-broken.sh
+docker ps
 ```
 
-## Want more incidents?
+Look carefully at the `PORTS` column.
+
+### Check the application logs
+
+```bash
+docker logs incident-001
+```
+
+### Ask yourself
+
+- Is the application process actually running?
+- Which port is Docker publishing?
+- Which port does the application say it is listening on?
+- Do those values match?
+- Why can a container be `Up` while the service is still unreachable?
+
+If you need another clue, open [`HINTS.md`](INCIDENT001/HINTS.md).
+
+---
+
+## 6. Fix the incident
+
+Stop the broken container:
+
+```bash
+docker stop incident-001
+```
+
+Now run the application again with the configuration you believe is correct.
+
+**Do not open the solution until you have tried your own fix.**
+
+---
+
+## 7. Verify your fix manually
+
+First check that the new container is running:
+
+```bash
+docker ps
+```
+
+Then test the service:
+
+```bash
+curl http://localhost:3000/api/health
+```
+
+A successful response should look similar to:
+
+```json
+{
+  "status": "ok",
+  "service": "real-devops-lab-app"
+}
+```
+
+If you get a healthy response, you solved the incident. ✅
+
+Now compare your diagnosis with [`SOLUTION.md`](INCIDENT001/SOLUTION.md).
+
+---
+
+## What you should be able to explain afterwards
+
+- what `-p HOST_PORT:CONTAINER_PORT` means
+- why `docker ps` showing `Up` does not mean the application is reachable
+- how `docker logs` helped you find the mismatch
+- how you verified the fix instead of assuming it worked
+
+---
+
+## Want another incident?
 
 I’m building **Real DevOps Lab** around short, production-style troubleshooting exercises like this one.
 
 **BUILD → DEPLOY → BREAK → TROUBLESHOOT → FIX**
 
-👉 [Continue with more free hands-on labs in Real DevOps Lab](https://www.skool.com/real-devops-lab-9645)
+👉 [Continue with more free hands-on labs](https://www.skool.com/real-devops-lab-9645)
 
-If you came from Reddit, I’d especially like to know: **what did you check first, and what made you find the root cause?**
+If you came from Reddit, tell me what you checked first and what led you to the root cause.

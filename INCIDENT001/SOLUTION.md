@@ -1,75 +1,78 @@
 # INCIDENT-001 — Solution
 
-## Root cause
+## What was wrong?
 
-The application is started with:
+The container was started with:
 
-```text
-PORT=3001
+```bash
+-e PORT=3001
 ```
 
-so Node.js listens on **port 3001 inside the container**.
+so the Node.js application listens on port `3001` inside the container.
 
-But the broken container was started with:
+But Docker was started with:
 
-```text
+```bash
 -p 3000:3000
 ```
 
-Docker therefore forwards host port `3000` to container port `3000`, where nothing is listening.
+That means:
 
-The container stays running because the Node.js process itself is healthy. The problem is the port mapping.
+```text
+localhost:3000 → container:3000
+```
 
-## Fix option A — map to the port the app actually uses
+Nothing is listening on container port `3000`, so the request fails even though the Node.js process is alive and the container remains `Up`.
+
+## Correct run command
+
+After stopping the broken container:
 
 ```bash
-docker rm -f rdl-incident-001
+docker stop incident-001
+```
 
-docker run -d \
-  --name rdl-incident-001 \
+run:
+
+```bash
+docker run -d --rm \
+  --name incident-001 \
   -e PORT=3001 \
   -p 3000:3001 \
-  rdl-incident-001
+  real-devops-lab-app
 ```
 
-Then verify:
+Now the traffic path is:
+
+```text
+localhost:3000 → container:3001 → Node.js app
+```
+
+## Verify
 
 ```bash
-./verify.sh
+docker ps
+curl http://localhost:3000/api/health
 ```
 
-## Fix option B — make the application use port 3000
+You should receive a healthy JSON response.
 
-```bash
-docker rm -f rdl-incident-001
+## What this incident teaches
 
-docker run -d \
-  --name rdl-incident-001 \
-  -e PORT=3000 \
-  -p 3000:3000 \
-  rdl-incident-001
-```
+`docker ps` showing `Up` only tells you the container process is running.
 
-Then:
+When an application is unavailable, compare:
 
-```bash
-./verify.sh
-```
+1. the host port you are calling
+2. the container port Docker forwards traffic to
+3. the port the application actually listens on
 
-## What this teaches
+This is why troubleshooting means observing the system first instead of randomly changing configuration.
 
-`docker ps` showing **Up** does not mean the service is reachable.
+---
 
-When a container is running but an application is unavailable, compare:
+## Continue practicing
 
-1. The port the process is actually listening on.
-2. The container port Docker is forwarding traffic to.
-3. The host port you are testing.
+More hands-on incidents are available in **Real DevOps Lab**:
 
-Also remember: `EXPOSE` in a Dockerfile is metadata/documentation. It does not automatically publish or redirect traffic.
-
-## Production takeaway
-
-A basic health check or smoke test after deployment would catch this immediately. A successful deployment should be **verified**, not assumed.
-
-👉 [Continue with more hands-on incidents in Real DevOps Lab](https://www.skool.com/real-devops-lab-9645)
+https://www.skool.com/real-devops-lab-9645
